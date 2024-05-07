@@ -32,9 +32,10 @@ def make_command_hyprland(screens, rects):
             command.append(f"keyword monitor {screen.uid},disable ;")
             continue
         command.append(
-            f"keyword monitor {screen.uid},{screen.mode},{int(rect.x)}x{int(rect.y)},{screen.scale:.6f},transform,{screen.transform} ;"
+            f"keyword monitor {screen.uid},{screen.mode},{int(rect.x)}x{int(rect.y)},{screen.scale:.6f},"
+            f"transform,{screen.transform}"
+            f"{',mirror,' + screens[screen.mirror_source].uid if screen.mirror_source is not None else ''} ;"
         )
-
     cmd = " ".join(command + ['"'])
     return cmd
 

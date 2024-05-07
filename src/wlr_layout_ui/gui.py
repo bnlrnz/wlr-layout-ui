@@ -186,6 +186,14 @@ class UI(pyglet.window.Window):
             togglable=True,
         )
 
+        ref_rect.width = but_w
+        self.mirror = Dropdown(
+            ref_rect.copy(),
+            label="Mirror",
+            options=[],
+            onchange=self.action_update_mirror,
+        )
+
         base_widgets: list[Widget] = [
             self.on_off_but,
             self.resolutions,
@@ -194,6 +202,7 @@ class UI(pyglet.window.Window):
         if config.get("hyprland"):
             base_widgets.append(self.rotation)
             base_widgets.append(self.scale_ratio)
+            base_widgets.append(self.mirror)
 
         self.settings_box = HBox(widgets=base_widgets)
         self.require_selected_item.add(self.settings_box)
@@ -653,11 +662,23 @@ class UI(pyglet.window.Window):
                 found.target_rect = srect
         self.center_layout()
 
+    def action_update_mirror(self):
+        monitor = self.selected_item
+        assert monitor
+        monitor.screen.mirror_source = self.mirror.get_value()
+
     def action_update_scale(self):
         monitor = self.selected_item
         assert monitor
         monitor.screen.scale = self.scale_ratio.get_value()
         monitor.target_rect.width, monitor.target_rect.height = get_size(monitor.screen)
+
+    def action_update_mirror_screens(self, screen):
+        other_screens = self.gui_screens.copy()
+        other_screens.remove(screen)
+        self.mirror.options = [{"name": "None", "value": None}]
+        self.mirror.options.extend([{"name": f"{simplify_model_name(screen.screen.name)}",
+                                     "value": index} for index, screen in enumerate(other_screens)])
 
     def action_update_frequencies(self, screen, mode=None):
         if mode is None:
@@ -734,5 +755,6 @@ class UI(pyglet.window.Window):
         self.resolutions.selected_index = i
         self.rotation.selected_index = screen.screen.transform
         self.action_update_frequencies(screen)
+        self.action_update_mirror_screens(screen)
 
     # }}}

@@ -34,6 +34,7 @@ class Screen:
     scale: float = 1
     available: list[Mode] = field(default_factory=list)
     transform: int = 0
+    mirror_source: None | int = None
 
     def __repr__(self):
         return "<Screen%s %s [%s]>" % ("*" if self.active else "", self.name, self.mode)
