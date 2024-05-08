@@ -89,7 +89,8 @@ def load():
         major = int(version[0])
         minor = int(version[1])
         new_hyprland = major == 0 and minor >= 37 or major > 0
-    except (KeyError, json.JSONDecodeError):
+    except (KeyError, json.JSONDecodeError, ValueError):
+        print("No hyprland found or hyprland version older than v0.37.x. Fallback to wlr-randr...")
         new_hyprland = False
 
     if new_hyprland:
