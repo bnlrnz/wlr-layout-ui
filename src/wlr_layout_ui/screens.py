@@ -84,13 +84,17 @@ def load():
         displayInfo.clear()
 
     try:
-        version = json.loads(subprocess.getoutput("hyprctl -j version"))["tag"]
+        output = subprocess.getoutput("hyprctl -j version")
+        print(output)
+        import ipdb;ipdb.set_trace()
+        version = json.loads(output)["commit"]
+        print(version)
         version = version[1:].split(".")
         major = int(version[0])
         minor = int(version[1])
         new_hyprland = major == 0 and minor >= 37 or major > 0
-    except (KeyError, json.JSONDecodeError, ValueError):
-        print("No hyprland found or hyprland version older than v0.37.x. Fallback to wlr-randr...")
+    except (KeyError, json.JSONDecodeError, ValueError) as error:
+        print(f"{error}\nNo hyprland found or hyprland version older than v0.37.x. Fallback to wlr-randr...")
         new_hyprland = False
 
     if new_hyprland:

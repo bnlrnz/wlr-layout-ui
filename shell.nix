@@ -4,6 +4,7 @@ pkgs.mkShell {
 
   nativeBuildInputs = with pkgs; [
     poetry
+    python311Packages.ipdb
     python311Packages.pyglet
     python311Packages.tomli
     python311Packages.tomli-w
